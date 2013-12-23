@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.action.GetPhoneNum;
 import com.sunny.imessage.push.file.FileUtils;
-import com.sunny.imessage.push.utils.StringUtils;
 
 /**
  * 
@@ -143,7 +143,7 @@ public class SendEditor extends EditorPart {
 		startBut.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
+				styledText.setText("");
 				final String text = text_1.getText();
 				Thread t = new Thread(new Runnable() {
 
@@ -169,6 +169,7 @@ public class SendEditor extends EditorPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				GetPhoneNum.instance.stop();
+				startBut.setEnabled(true);
 			}
 		});
 		button_2.setText("停止");
@@ -229,7 +230,7 @@ public class SendEditor extends EditorPart {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 
-		styledText = new StyledText(composite, SWT.BORDER);
+		styledText = new StyledText(composite, SWT.BORDER | SWT.V_SCROLL | SWT.READ_ONLY);
 		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 8, 1));
 		// TODO Auto-generated method stub
 

@@ -16,6 +16,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,12 +122,12 @@ public class GetPhoneNum implements IAction {
 
 			@Override
 			public void run() {
-				outputText.append(line);
-				count++;
 				if (count == 1000)
 					outputText.setText("");
-				else
-					outputText.setSelection(outputText.getTextLimit());
+				outputText.append(line);
+				count++;
+				ScrollBar vsb = outputText.getVerticalBar();
+				vsb.setSelection(vsb.getMaximum());
 
 			}
 
