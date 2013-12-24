@@ -63,15 +63,15 @@ public class ReportSend implements IAction {
 		// long finished = GetPhoneNum.instance.getFailed() + GetPhoneNum.instance.getSuccess();
 		// double rate = finished * 1.0d / GetPhoneNum.instance.getSize();
 
-		StringBuffer sb = new StringBuffer();
-
-		for (String p : phones) {
-			String line = p.replaceAll("\\+", "");
-			sb.append(line + "\n");
-		}
+		// StringBuffer sb = new StringBuffer();
+		//
+		// for (String p : phones) {
+		// String line = p.replaceAll("\\+", "");
+		// sb.append(line + "\n");
+		// }
 
 		// logger.debug(sb.toString());
-		GetPhoneNum.instance.print(sb.toString());
+//		GetPhoneNum.instance.print(sb.toString());
 
 		JSONObject json = new JSONObject();
 		json.put("resultNum", phones.length);

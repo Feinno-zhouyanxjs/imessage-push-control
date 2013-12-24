@@ -50,16 +50,11 @@ public class GetPhoneNum implements IAction {
 
 	private int count = 0;
 
+	private int sum = 0;
+
 	private ArrayList<String> files = new ArrayList<String>();
 
 	private GetPhoneNum() {
-	}
-
-	/**
-	 * @return the size
-	 */
-	public long getSize() {
-		return phones.size();
 	}
 
 	public void stop() {
@@ -89,7 +84,9 @@ public class GetPhoneNum implements IAction {
 				failed.add(p);
 			}
 		}
-		logger.info("reading files has finished.");
+		sum = phones.size();
+		// logger.info("reading files has finished.");
+		print("读取文件成功，开始下发\n");
 	}
 
 	/**
@@ -115,6 +112,15 @@ public class GetPhoneNum implements IAction {
 		for (String phone : p) {
 			failed.add(Long.valueOf(phone.replaceAll("+", "")));
 		}
+	}
+
+	/**
+	 * 返回已发送
+	 * 
+	 * @return
+	 */
+	public int sendCount() {
+		return sum - phones.size();
 	}
 
 	public synchronized void print(final String line) {
@@ -172,7 +178,8 @@ public class GetPhoneNum implements IAction {
 	}
 
 	@Override
-	public void doing(Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void doing(Request baseRequest, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		// String count = request.getParameter("count");
 		int max = 1;
 		// if (count != null && !count.equals(""))
@@ -181,8 +188,10 @@ public class GetPhoneNum implements IAction {
 		Long num = getNum();
 		logger.debug("---------------------" + num);
 
-		if (num == null)
+		if (num == null) {
+			print("任务完成\n");
 			return;
+		}
 
 		JSONArray lstJSON = new JSONArray();
 		// for (int i = 0; i < max; i++) {
@@ -200,18 +209,27 @@ public class GetPhoneNum implements IAction {
 		resJSON.put("text", text);
 		resJSON.put("phone", lstJSON);
 		logger.debug(resJSON.toJSONString());
-		response.getOutputStream().write(resJSON.toJSONString().getBytes("utf-8"));
+		response.getOutputStream().write(
+				resJSON.toJSONString().getBytes("utf-8"));
 		response.getOutputStream().flush();
+
+		// 输出状态信息
+		print(num + " 下发成功                    已下发:" + sendCount() + "/" + sum
+				+ "           成功:" + success.size() + "           失败:"
+				+ failed.size() + "\n");
 	}
 
 	public void save(String type) {
 		try {
 			String location = StringUtils.getLocation();
 			if (type.equals(Task.SEND)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.successFile);
-				FileUtils.writePhones(failed, location + FileUtils.DIR + FileUtils.failedFile);
+				FileUtils.writePhones(success, location + FileUtils.DIR
+						+ FileUtils.successFile);
+				FileUtils.writePhones(failed, location + FileUtils.DIR
+						+ FileUtils.failedFile);
 			} else if (type.equals(Task.SCAN)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.scanFile);
+				FileUtils.writePhones(success, location + FileUtils.DIR
+						+ FileUtils.scanFile);
 			}
 		} catch (IOException e) {
 			logger.error("", e);
