@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="IMessagePushControl" id="com.sunny.imessage.push.Activator.product" application="com.sunny.imessage.push.Activator.application" useFeatures="false" includeLaunchers="false">
+<product name="IMessagePushControl" id="com.sunny.imessage.push.Activator.product" application="com.sunny.imessage.push.Activator.application" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -10,11 +10,12 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/imessage-push-control/icons/e_mail_16*16.png" i32="/imessage-push-control/icons/e_mail_32*32.png" i48="/imessage-push-control/icons/e_mail_48*48.png" i64="/imessage-push-control/icons/e_mail_64*64.png" i128="/imessage-push-control/icons/e_mail_128*128.png"/>
 
    <splash
       location="com.sunny.imessage.push.Activator" />
-   <launcher>
+   <launcher name="message">
+      <macosx icon="/imessage-push-control/icons/e_mail.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>

@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -110,7 +111,7 @@ public class SendEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite composite) {
-		composite.setLayout(new GridLayout(8, false));
+		composite.setLayout(new GridLayout(10, false));
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -119,34 +120,52 @@ public class SendEditor extends EditorPart {
 		fileText = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		fileText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		final Button button = new Button(composite, SWT.NONE);
-		button.addSelectionListener(new SelectionAdapter() {
+		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.OPEN);
 				String file = fileDialog.open();
 				if (file != null)
 					fileText.setText(file);
+			}
+		});
+		button_1.setText("文件");
 
+		final Button button = new Button(composite, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				final String filePath = fileText.getText().trim();
 				if (filePath == null || filePath.equals("")) {
+					styledText.append("请选择文件添加\n");
 					return;
 				} else {
 					GetPhoneNum.instance.addFile(filePath);
 					styledText.append("添加文件" + filePath + "成功\n");
+					fileText.setText("");
 				}
 			}
 		});
 		button.setText("添加");
 
+		Button button_3 = new Button(composite, SWT.NONE);
+		button_3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				GetPhoneNum.instance.stop();
+				styledText.append("任务已清理\n");
+			}
+		});
+		button_3.setText("清空");
+
 		startBut = new Button(composite, SWT.NONE);
 		startBut.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				styledText.setText("");
 				final String text = text_1.getText();
 				if (text == null || text.equals("")) {
-					styledText.setText("发送内容不能为空");
+					styledText.append("发送内容不能为空\n");
 					return;
 				}
 				Thread t = new Thread(new Runnable() {
@@ -154,6 +173,14 @@ public class SendEditor extends EditorPart {
 					@Override
 					public void run() {
 						try {
+							Display.getDefault().syncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									styledText.setText("");
+								}
+
+							});
 							GetPhoneNum.instance.start(styledText, text, startBut);
 						} catch (IOException e) {
 							logger.error("", e);
@@ -164,7 +191,6 @@ public class SendEditor extends EditorPart {
 				});
 				t.start();
 				startBut.setEnabled(false);
-				fileText.setText("");
 			}
 		});
 		startBut.setText("开始");
@@ -175,7 +201,7 @@ public class SendEditor extends EditorPart {
 			public void widgetSelected(SelectionEvent e) {
 				GetPhoneNum.instance.stop();
 				startBut.setEnabled(true);
-				fileText.setText("");
+				styledText.setText("任务停止成功");
 			}
 		});
 		button_2.setText("停止");
@@ -199,16 +225,9 @@ public class SendEditor extends EditorPart {
 
 		Label label_1 = new Label(composite, SWT.NONE);
 		label_1.setText("内容");
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
 
 		text_1 = new Text(composite, SWT.BORDER | SWT.V_SCROLL);
-		GridData gd_text_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 8, 1);
+		GridData gd_text_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 10, 1);
 		gd_text_1.heightHint = 171;
 		text_1.setLayoutData(gd_text_1);
 
@@ -221,9 +240,11 @@ public class SendEditor extends EditorPart {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		styledText = new StyledText(composite, SWT.BORDER | SWT.V_SCROLL);
-		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 8, 1));
+		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 10, 1));
 		// TODO Auto-generated method stub
 
 	}

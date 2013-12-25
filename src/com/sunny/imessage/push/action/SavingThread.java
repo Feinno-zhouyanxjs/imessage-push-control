@@ -33,7 +33,7 @@ public class SavingThread implements Runnable {
 	 */
 	@Override
 	public void run() {
-		task.save(type);
+//		task.save(type);
 
 	}
 

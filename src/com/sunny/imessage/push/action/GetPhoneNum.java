@@ -77,14 +77,15 @@ public class GetPhoneNum implements IAction {
 	}
 
 	public void start(StyledText outputText, String text, Button but) throws IOException {
-		if (files.size() == 0) {
-			print("请先添加号码文件\n");
-			return;
-		}
 		this.text = text;
 		this.but = but;
 		phones.clear();
 		this.outputText = outputText;
+		if (files.size() == 0) {
+			print("请先添加号码文件\n");
+			but.setEnabled(true);
+			return;
+		}
 		for (String file : files) {
 			List<Long> f = FileUtils.readPhones(file);
 			for (Long p : f) {
@@ -151,30 +152,6 @@ public class GetPhoneNum implements IAction {
 
 	private long getNum() {
 		return phones.poll();
-		// Long num = null;
-		// while (true) {
-		// logger.debug("..................");
-		// if (iter.hasNext()) {
-		// num = iter.next();
-		// } else {
-		// if (phones.size() > 0) {
-		// iter = phones.iterator();
-		// num = iter.next();
-		// } else {
-		// num = -1l;
-		// }
-		// }
-		// if (num != -1) {
-		// if (success.contains(num) || failed.contains(num)) {
-		// iter.remove();
-		// continue;
-		// } else {
-		// return num;
-		// }
-		// } else {
-		// return num;
-		// }
-		// }
 	}
 
 	public ConcurrentHashSet<Long> getFailed() {
@@ -224,17 +201,4 @@ public class GetPhoneNum implements IAction {
 		print(num + "-下发成功-------已下发:" + sendCount() + "/" + sum + "-------成功:" + success.size() + "\n");
 	}
 
-	public void save(String type) {
-		try {
-			String location = StringUtils.getLocation();
-			if (type.equals(Task.SEND)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.successFile);
-				FileUtils.writePhones(failed, location + FileUtils.DIR + FileUtils.failedFile);
-			} else if (type.equals(Task.SCAN)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.scanFile);
-			}
-		} catch (IOException e) {
-			logger.error("", e);
-		}
-	}
 }
