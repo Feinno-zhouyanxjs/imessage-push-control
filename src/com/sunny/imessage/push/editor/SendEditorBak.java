@@ -36,8 +36,8 @@ import com.sunny.imessage.push.file.FileUtils;
  * @author <a href="mailto:zhouyan@pzoomtech.com">ZhouYan</a>.
  * 
  */
-public class SendEditor extends EditorPart {
-	public SendEditor() {
+public class SendEditorBak extends EditorPart {
+	public SendEditorBak() {
 	}
 
 	public final static String ID = "com.sunny.imessage.push.editor.SendEditor";
@@ -133,7 +133,7 @@ public class SendEditor extends EditorPart {
 					return;
 				} else {
 					GetPhoneNum.instance.addFile(filePath);
-					styledText.append("添加文件" + filePath + "成功\n");
+					styledText.append("添加文件成功\n");
 				}
 			}
 		});
@@ -164,7 +164,6 @@ public class SendEditor extends EditorPart {
 				});
 				t.start();
 				startBut.setEnabled(false);
-				fileText.setText("");
 			}
 		});
 		startBut.setText("开始");
@@ -175,10 +174,24 @@ public class SendEditor extends EditorPart {
 			public void widgetSelected(SelectionEvent e) {
 				GetPhoneNum.instance.stop();
 				startBut.setEnabled(true);
-				fileText.setText("");
 			}
 		});
 		button_2.setText("停止");
+
+		Button button_3 = new Button(composite, SWT.NONE);
+		button_3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+				String file = fileDialog.open();
+				try {
+					FileUtils.writePhones(GetPhoneNum.instance.getSuccess(), file);
+				} catch (IOException e1) {
+					logger.error("", e1);
+				}
+			}
+		});
+		button_3.setText("导出成功");
 
 		Button btnshibai = new Button(composite, SWT.NONE);
 		btnshibai.addSelectionListener(new SelectionAdapter() {
@@ -194,7 +207,6 @@ public class SendEditor extends EditorPart {
 			}
 		});
 		btnshibai.setText("导出失败");
-		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 
 		Label label_1 = new Label(composite, SWT.NONE);

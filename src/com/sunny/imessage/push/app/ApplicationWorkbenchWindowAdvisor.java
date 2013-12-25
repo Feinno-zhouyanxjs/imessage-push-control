@@ -8,12 +8,15 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.UIPlugin;
 import org.eclipse.ui.internal.part.NullEditorInput;
-import org.eclipse.ui.presentations.AbstractPresentationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.editor.SendEditor;
 import com.sunny.imessage.push.web.WebServer;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		super(configurer);
@@ -40,7 +43,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		try {
 			UIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new NullEditorInput(), SendEditor.ID, true);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error("", e);
 		}
 
 		WebServer server = new WebServer();

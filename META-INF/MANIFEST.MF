@@ -19,7 +19,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/ha-rpc-1.1.15-SNAPSHOT.jar,
  lib/json-smart-2.0-RC2.jar,
- lib/mysql-connector-java-5.1.18.jar,
  lib/asm-3.3.1.jar,
- lib/asm-1.0-RC3.jar,
- lib/derby.jar
+ lib/asm-1.0-RC3.jar

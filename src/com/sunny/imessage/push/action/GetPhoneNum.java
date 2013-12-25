@@ -2,7 +2,6 @@ package com.sunny.imessage.push.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -15,6 +14,7 @@ import net.minidev.json.JSONObject;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.slf4j.Logger;
@@ -54,11 +54,14 @@ public class GetPhoneNum implements IAction {
 
 	private ArrayList<String> files = new ArrayList<String>();
 
+	private Button but;
+
 	private GetPhoneNum() {
 	}
 
 	public void stop() {
 		phones.clear();
+		files.clear();
 	}
 
 	/**
@@ -73,8 +76,13 @@ public class GetPhoneNum implements IAction {
 		files.add(file);
 	}
 
-	public void start(StyledText outputText, String text) throws IOException {
+	public void start(StyledText outputText, String text, Button but) throws IOException {
+		if (files.size() == 0) {
+			print("请先添加号码文件\n");
+			return;
+		}
 		this.text = text;
+		this.but = but;
 		phones.clear();
 		this.outputText = outputText;
 		for (String file : files) {
@@ -134,7 +142,7 @@ public class GetPhoneNum implements IAction {
 				count++;
 				ScrollBar vsb = outputText.getVerticalBar();
 				vsb.setSelection(vsb.getMaximum());
-
+				outputText.setSelection(outputText.getText().length());
 			}
 
 		});
@@ -178,10 +186,9 @@ public class GetPhoneNum implements IAction {
 	}
 
 	@Override
-	public void doing(Request baseRequest, HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	public void doing(Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// String count = request.getParameter("count");
-		int max = 1;
+		// int max = 1;
 		// if (count != null && !count.equals(""))
 		// max = Integer.valueOf(count);
 
@@ -190,6 +197,7 @@ public class GetPhoneNum implements IAction {
 
 		if (num == null) {
 			print("任务完成\n");
+			but.setEnabled(true);
 			return;
 		}
 
@@ -209,27 +217,21 @@ public class GetPhoneNum implements IAction {
 		resJSON.put("text", text);
 		resJSON.put("phone", lstJSON);
 		logger.debug(resJSON.toJSONString());
-		response.getOutputStream().write(
-				resJSON.toJSONString().getBytes("utf-8"));
+		response.getOutputStream().write(resJSON.toJSONString().getBytes("utf-8"));
 		response.getOutputStream().flush();
 
 		// 输出状态信息
-		print(num + " 下发成功                    已下发:" + sendCount() + "/" + sum
-				+ "           成功:" + success.size() + "           失败:"
-				+ failed.size() + "\n");
+		print(num + "-下发成功-------已下发:" + sendCount() + "/" + sum + "-------成功:" + success.size() + "\n");
 	}
 
 	public void save(String type) {
 		try {
 			String location = StringUtils.getLocation();
 			if (type.equals(Task.SEND)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR
-						+ FileUtils.successFile);
-				FileUtils.writePhones(failed, location + FileUtils.DIR
-						+ FileUtils.failedFile);
+				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.successFile);
+				FileUtils.writePhones(failed, location + FileUtils.DIR + FileUtils.failedFile);
 			} else if (type.equals(Task.SCAN)) {
-				FileUtils.writePhones(success, location + FileUtils.DIR
-						+ FileUtils.scanFile);
+				FileUtils.writePhones(success, location + FileUtils.DIR + FileUtils.scanFile);
 			}
 		} catch (IOException e) {
 			logger.error("", e);
