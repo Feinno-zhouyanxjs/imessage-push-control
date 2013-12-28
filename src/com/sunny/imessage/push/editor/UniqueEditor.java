@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.sunny.imessage.push.editor;
 
 import java.io.IOException;
@@ -14,6 +11,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -26,25 +24,19 @@ import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.action.GetPhoneNum;
 import com.sunny.imessage.push.file.FileUtils;
+import com.sunny.imessage.push.service.SendService;
 
-/**
- * 
- * 发送
- * 
- * Create on Dec 22, 2013 2:05:46 PM
- * 
- * @author <a href="mailto:zhouyan@pzoomtech.com">ZhouYan</a>.
- * 
- */
-public class SendEditorBak extends EditorPart {
-	public SendEditorBak() {
+public class UniqueEditor extends EditorPart {
+	public UniqueEditor() {
 	}
 
-	public final static String ID = "com.sunny.imessage.push.editor.SendEditor";
+	public final static String ID = "com.sunny.imessage.push.editor.UniqueEditor";
+
 	private Text fileText;
-	private Text text_1;
 	private StyledText styledText;
 	private Button startBut;
+
+	private SendService service;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -79,6 +71,8 @@ public class SendEditorBak extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.setInput(input);
 		this.setSite(site);
+		service = new SendService();
+		GetPhoneNum.instance.setService(service);
 	}
 
 	/*
@@ -110,7 +104,7 @@ public class SendEditorBak extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite composite) {
-		composite.setLayout(new GridLayout(8, false));
+		composite.setLayout(new GridLayout(11, false));
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -119,34 +113,52 @@ public class SendEditorBak extends EditorPart {
 		fileText = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		fileText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		final Button button = new Button(composite, SWT.NONE);
-		button.addSelectionListener(new SelectionAdapter() {
+		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.OPEN);
 				String file = fileDialog.open();
 				if (file != null)
 					fileText.setText(file);
+			}
+		});
+		button_1.setText("文件");
 
-				final String filePath = fileText.getText().trim();
+		final Button button = new Button(composite, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final String filePath = fileText.getText();
 				if (filePath == null || filePath.equals("")) {
+					styledText.append("请选择文件添加\n");
 					return;
 				} else {
-					GetPhoneNum.instance.addFile(filePath);
-					styledText.append("添加文件成功\n");
+					service.addFile(filePath);
+					styledText.append("添加文件" + filePath + "成功\n");
+					fileText.setText("");
 				}
 			}
 		});
 		button.setText("添加");
 
+		Button button_3 = new Button(composite, SWT.NONE);
+		button_3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				service.stop();
+				styledText.append("任务已清理\n");
+			}
+		});
+		button_3.setText("清空");
+
 		startBut = new Button(composite, SWT.NONE);
 		startBut.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				styledText.setText("");
-				final String text = text_1.getText();
+				final String text = "。";
 				if (text == null || text.equals("")) {
-					styledText.setText("发送内容不能为空");
+					styledText.append("发送内容不能为空\n");
 					return;
 				}
 				Thread t = new Thread(new Runnable() {
@@ -154,7 +166,15 @@ public class SendEditorBak extends EditorPart {
 					@Override
 					public void run() {
 						try {
-							GetPhoneNum.instance.start(styledText, text, startBut);
+							Display.getDefault().syncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									styledText.setText("");
+								}
+
+							});
+							service.start(styledText, text, startBut);
 						} catch (IOException e) {
 							logger.error("", e);
 						}
@@ -172,57 +192,16 @@ public class SendEditorBak extends EditorPart {
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				GetPhoneNum.instance.stop();
+				service.stop();
 				startBut.setEnabled(true);
+				styledText.append("任务停止成功\n");
 			}
 		});
 		button_2.setText("停止");
-
-		Button button_3 = new Button(composite, SWT.NONE);
-		button_3.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
-				String file = fileDialog.open();
-				try {
-					FileUtils.writePhones(GetPhoneNum.instance.getSuccess(), file);
-				} catch (IOException e1) {
-					logger.error("", e1);
-				}
-			}
-		});
-		button_3.setText("导出成功");
-
-		Button btnshibai = new Button(composite, SWT.NONE);
-		btnshibai.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
-				String file = fileDialog.open();
-				try {
-					FileUtils.writePhones(GetPhoneNum.instance.getFailed(), file);
-				} catch (IOException e1) {
-					logger.error("", e1);
-				}
-			}
-		});
-		btnshibai.setText("导出失败");
-		new Label(composite, SWT.NONE);
-
-		Label label_1 = new Label(composite, SWT.NONE);
-		label_1.setText("内容");
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-
-		text_1 = new Text(composite, SWT.BORDER | SWT.V_SCROLL);
-		GridData gd_text_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 8, 1);
-		gd_text_1.heightHint = 171;
-		text_1.setLayoutData(gd_text_1);
 
 		Label label_2 = new Label(composite, SWT.NONE);
 		label_2.setText("输出");
@@ -233,9 +212,46 @@ public class SendEditorBak extends EditorPart {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		styledText = new StyledText(composite, SWT.BORDER | SWT.V_SCROLL);
-		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 8, 1));
+		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 11, 1));
+
+		Composite composite_1 = new Composite(composite, SWT.NONE);
+		composite_1.setLayout(new GridLayout(2, false));
+		composite_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 11, 1));
+
+		Button button_4 = new Button(composite_1, SWT.NONE);
+		button_4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+				String file = fileDialog.open();
+				try {
+					FileUtils.writePhones(service.getSuccess(), file);
+				} catch (IOException e1) {
+					logger.error("", e1);
+				}
+			}
+		});
+		button_4.setText("导出成功");
+
+		Button btnshibai = new Button(composite_1, SWT.NONE);
+		btnshibai.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+				String file = fileDialog.open();
+				try {
+					FileUtils.writePhones(service.getFailed(), file);
+				} catch (IOException e1) {
+					logger.error("", e1);
+				}
+			}
+		});
+		btnshibai.setText("导出失败");
 		// TODO Auto-generated method stub
 
 	}
@@ -258,7 +274,7 @@ public class SendEditorBak extends EditorPart {
 	 */
 	@Override
 	public void dispose() {
-		GetPhoneNum.instance.stop();
+		service.stop();
 		super.dispose();
 	}
 

@@ -42,8 +42,6 @@ public class FileUtils {
 		List<Long> set = Collections.synchronizedList(new ArrayList<Long>());
 		try {
 			while ((line = br.readLine()) != null) {
-				if (!line.startsWith("86"))
-					line = "86" + line;
 				long num = Long.valueOf(line);
 				set.add(num);
 			}
@@ -54,6 +52,8 @@ public class FileUtils {
 	}
 
 	public static void writePhones(ConcurrentHashSet<Long> set, String file) throws IOException {
+		if (file == null || file.equals(""))
+			return;
 		FileWriter fw = new FileWriter(new File(file));
 		BufferedWriter bw = new BufferedWriter(fw);
 		try {

@@ -14,6 +14,8 @@ import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sunny.imessage.push.service.IService;
+
 /**
  * 
  * 处理客户端处理结果
@@ -55,9 +57,9 @@ public class ReportSend implements IAction {
 			return;
 
 		if (type.equals("deliver")) {
-			GetPhoneNum.instance.success(phones);
+			GetPhoneNum.instance.getService().success(phones);
 		} else {
-			GetPhoneNum.instance.failed(phones);
+			GetPhoneNum.instance.getService().failed(phones);
 		}
 
 		// long finished = GetPhoneNum.instance.getFailed() + GetPhoneNum.instance.getSuccess();
@@ -71,7 +73,7 @@ public class ReportSend implements IAction {
 		// }
 
 		// logger.debug(sb.toString());
-//		GetPhoneNum.instance.print(sb.toString());
+		// GetPhoneNum.instance.print(sb.toString());
 
 		JSONObject json = new JSONObject();
 		json.put("resultNum", phones.length);
@@ -79,4 +81,5 @@ public class ReportSend implements IAction {
 		response.getOutputStream().write(responseXml.getBytes("utf-8"));
 		response.getOutputStream().flush();
 	}
+
 }

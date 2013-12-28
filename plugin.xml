@@ -66,6 +66,12 @@
            name="区域扫描">
      </editor>
      <editor
+           class="com.sunny.imessage.push.editor.ScanCustomEditor"
+           icon="icons/sample.gif"
+           id="com.sunny.imessage.push.editor.ScanCustomEditor"
+           name="自定义扫描">
+     </editor>
+     <editor
            class="com.sunny.imessage.push.editor.ScanFileEditor"
            icon="icons/sample.gif"
            id="com.sunny.imessage.push.editor.ScanFileEditor"
@@ -75,7 +81,7 @@
            class="com.sunny.imessage.push.editor.SendEditor"
            icon="icons/email_send.png"
            id="com.sunny.imessage.push.editor.SendEditor"
-           name="号码下发">
+           name="文件发送">
      </editor>
   </extension>
   <extension

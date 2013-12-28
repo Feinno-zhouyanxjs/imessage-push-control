@@ -8,25 +8,25 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.part.NullEditorInput;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.Activator;
+import com.sunny.imessage.push.editor.ScanCustomEditor;
+import com.sunny.imessage.push.editor.ScanFileEditor;
 import com.sunny.imessage.push.editor.SendEditor;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 
 public class NaviView extends ViewPart {
 
@@ -51,17 +51,36 @@ public class NaviView extends ViewPart {
 				TreeItem[] items = tree.getSelection();
 				if (items.length > 0) {
 					TreeItem item = items[0];
+					IWorkbenchPage page = NaviView.this.getViewSite().getWorkbenchWindow().getActivePage();
+					EditorPart edit = (EditorPart) page.getActiveEditor();
 					if (item.getText().equals("文件发送")) {
-						IWorkbenchPage page = NaviView.this.getViewSite().getWorkbenchWindow().getActivePage();
-						IEditorPart edit = page.getActiveEditor();
-						if (edit == null) {
+						if (edit != null && edit.getTitle().equals("文件发送"))
+							return;
+						else {
+							page.closeAllEditors(true);
+							edit.dispose();
 							try {
 								page.openEditor(new NullEditorInput(), SendEditor.ID, true);
 							} catch (PartInitException e1) {
 								logger.error("", e1);
 							}
 						}
-					}
+					} else if (item.getText().equals("文件扫描")) {
+						if (edit != null && edit.getTitle().equals("文件扫描"))
+							return;
+						else {
+							page.closeAllEditors(true);
+							edit.dispose();
+							try {
+								page.openEditor(new NullEditorInput(), ScanFileEditor.ID, true);
+							} catch (PartInitException e1) {
+								logger.error("", e1);
+							}
+						}
+					} /*
+					 * else if (item.getText().equals("自定义扫描")) { if (edit != null && edit.getTitle().equals("自定义扫描")) return; else { page.closeAllEditors(true); edit.dispose(); try { page.openEditor(new NullEditorInput(), ScanCustomEditor.ID, true); } catch (PartInitException
+					 * e1) { logger.error("", e1); } } }
+					 */
 
 				}
 			}
@@ -83,12 +102,13 @@ public class NaviView extends ViewPart {
 			@Override
 			public Object[] getChildren(Object parent) {
 				if (parent.equals("功能")) {
-					return new String[] { /* "扫描", */"发送" };
+					return new String[] { "扫描", "发送", "统计" };
 				} else if (parent.equals("扫描")) {
 					return new String[] { "区域扫描", "自定义扫描", "文件扫描" };
 				} else if (parent.equals("发送")) {
 					return new String[] { "文件发送" };
-				}
+				} else if (parent.equals("统计"))
+					return new String[] { "去重" };
 				return new String[0];
 			}
 
@@ -104,7 +124,7 @@ public class NaviView extends ViewPart {
 
 			@Override
 			public boolean hasChildren(Object parent) {
-				if (parent.equals("功能") || parent.equals("扫描") || parent.equals("发送"))
+				if (parent.equals("功能") || parent.equals("扫描") || parent.equals("发送") || parent.equals("统计"))
 					return true;
 				else
 					return false;
@@ -125,7 +145,7 @@ public class NaviView extends ViewPart {
 			@Override
 			public Image getImage(Object element) {
 				URL url = null;
-				if (element.toString().equals("扫描") || element.toString().equals("发送")) {
+				if (element.toString().equals("扫描") || element.toString().equals("发送") || element.toString().equals("统计")) {
 					url = Activator.getDefault().getBundle().getResource("icons/apple_folder.png");
 				} else {
 					url = Activator.getDefault().getBundle().getEntry("icons/apple_menu_2.png");

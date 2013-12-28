@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.action.GetPhoneNum;
 import com.sunny.imessage.push.file.FileUtils;
+import com.sunny.imessage.push.service.SendService;
 
 /**
  * 
@@ -46,6 +47,8 @@ public class SendEditor extends EditorPart {
 	private Text text_1;
 	private StyledText styledText;
 	private Button startBut;
+
+	private SendService service;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -80,6 +83,8 @@ public class SendEditor extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.setInput(input);
 		this.setSite(site);
+		service = new SendService();
+		GetPhoneNum.instance.setService(service);
 	}
 
 	/*
@@ -136,12 +141,12 @@ public class SendEditor extends EditorPart {
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final String filePath = fileText.getText().trim();
+				final String filePath = fileText.getText();
 				if (filePath == null || filePath.equals("")) {
 					styledText.append("请选择文件添加\n");
 					return;
 				} else {
-					GetPhoneNum.instance.addFile(filePath);
+					service.addFile(filePath);
 					styledText.append("添加文件" + filePath + "成功\n");
 					fileText.setText("");
 				}
@@ -153,7 +158,7 @@ public class SendEditor extends EditorPart {
 		button_3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				GetPhoneNum.instance.stop();
+				service.stop();
 				styledText.append("任务已清理\n");
 			}
 		});
@@ -181,7 +186,7 @@ public class SendEditor extends EditorPart {
 								}
 
 							});
-							GetPhoneNum.instance.start(styledText, text, startBut);
+							service.start(styledText, text, startBut);
 						} catch (IOException e) {
 							logger.error("", e);
 						}
@@ -199,9 +204,9 @@ public class SendEditor extends EditorPart {
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				GetPhoneNum.instance.stop();
+				service.stop();
 				startBut.setEnabled(true);
-				styledText.setText("任务停止成功");
+				styledText.append("任务停止成功\n");
 			}
 		});
 		button_2.setText("停止");
@@ -213,7 +218,7 @@ public class SendEditor extends EditorPart {
 				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
 				String file = fileDialog.open();
 				try {
-					FileUtils.writePhones(GetPhoneNum.instance.getFailed(), file);
+					FileUtils.writePhones(service.getFailed(), file);
 				} catch (IOException e1) {
 					logger.error("", e1);
 				}
@@ -267,7 +272,7 @@ public class SendEditor extends EditorPart {
 	 */
 	@Override
 	public void dispose() {
-		GetPhoneNum.instance.stop();
+		service.stop();
 		super.dispose();
 	}
 
