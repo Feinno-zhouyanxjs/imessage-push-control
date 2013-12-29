@@ -204,8 +204,6 @@ public class ScanLocationEditor extends EditorPart {
 							logger.error(phone + " error");
 						}
 					}
-					String last = setList.get(setList.size() - 1);
-					setList.set(setList.size() - 1, last.substring(0, last.length() - 1));
 					styledText.append("累计添加" + setList.size() + "万号码\n");
 				} catch (IOException e1) {
 					logger.error("", e1);
