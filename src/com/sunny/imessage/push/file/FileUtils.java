@@ -73,4 +73,9 @@ public class FileUtils {
 
 	}
 
+	public static File[] files(String path) {
+		File file = new File(path);
+		return file.listFiles();
+	}
+
 }

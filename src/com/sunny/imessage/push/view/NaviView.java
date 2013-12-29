@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import com.sunny.imessage.push.Activator;
 import com.sunny.imessage.push.editor.ScanCustomEditor;
 import com.sunny.imessage.push.editor.ScanFileEditor;
+import com.sunny.imessage.push.editor.ScanLocationEditor;
 import com.sunny.imessage.push.editor.SendEditor;
+import com.sunny.imessage.push.editor.UniqueEditor;
 
 public class NaviView extends ViewPart {
 
@@ -77,10 +79,43 @@ public class NaviView extends ViewPart {
 								logger.error("", e1);
 							}
 						}
-					} /*
-					 * else if (item.getText().equals("自定义扫描")) { if (edit != null && edit.getTitle().equals("自定义扫描")) return; else { page.closeAllEditors(true); edit.dispose(); try { page.openEditor(new NullEditorInput(), ScanCustomEditor.ID, true); } catch (PartInitException
-					 * e1) { logger.error("", e1); } } }
-					 */
+					} else if (item.getText().equals("自定义扫描")) {
+						if (edit != null && edit.getTitle().equals("自定义扫描"))
+							return;
+						else {
+							page.closeAllEditors(true);
+							edit.dispose();
+							try {
+								page.openEditor(new NullEditorInput(), ScanCustomEditor.ID, true);
+							} catch (PartInitException e1) {
+								logger.error("", e1);
+							}
+						}
+					} else if (item.getText().equals("号码去重")) {
+						if (edit != null && edit.getTitle().equals("号码去重"))
+							return;
+						else {
+							page.closeAllEditors(true);
+							edit.dispose();
+							try {
+								page.openEditor(new NullEditorInput(), UniqueEditor.ID, true);
+							} catch (PartInitException e1) {
+								logger.error("", e1);
+							}
+						}
+					} else if (item.getText().equals("区域扫描")) {
+						if (edit != null && edit.getTitle().equals("区域扫描"))
+							return;
+						else {
+							page.closeAllEditors(true);
+							edit.dispose();
+							try {
+								page.openEditor(new NullEditorInput(), ScanLocationEditor.ID, true);
+							} catch (PartInitException e1) {
+								logger.error("", e1);
+							}
+						}
+					}
 
 				}
 			}
@@ -108,7 +143,7 @@ public class NaviView extends ViewPart {
 				} else if (parent.equals("发送")) {
 					return new String[] { "文件发送" };
 				} else if (parent.equals("统计"))
-					return new String[] { "去重" };
+					return new String[] { "号码去重" };
 				return new String[0];
 			}
 

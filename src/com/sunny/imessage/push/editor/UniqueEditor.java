@@ -1,8 +1,11 @@
 package com.sunny.imessage.push.editor;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -22,9 +25,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sunny.imessage.push.action.GetPhoneNum;
 import com.sunny.imessage.push.file.FileUtils;
-import com.sunny.imessage.push.service.SendService;
 
 public class UniqueEditor extends EditorPart {
 	public UniqueEditor() {
@@ -36,9 +37,35 @@ public class UniqueEditor extends EditorPart {
 	private StyledText styledText;
 	private Button startBut;
 
-	private SendService service;
-
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
+	private LinkedBlockingQueue<String> files = new LinkedBlockingQueue<String>();
+	private ConcurrentHashSet<Long> phones = new ConcurrentHashSet<Long>();
+
+	private class PrintFilePath implements Runnable {
+
+		private String filePath;
+
+		/**
+		 * @param filePath
+		 */
+		public PrintFilePath(String filePath) {
+			super();
+			this.filePath = filePath;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run() {
+			styledText.append("处理" + filePath + "完成\n");
+
+		}
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -71,8 +98,6 @@ public class UniqueEditor extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.setInput(input);
 		this.setSite(site);
-		service = new SendService();
-		GetPhoneNum.instance.setService(service);
 	}
 
 	/*
@@ -134,9 +159,8 @@ public class UniqueEditor extends EditorPart {
 					styledText.append("请选择文件添加\n");
 					return;
 				} else {
-					service.addFile(filePath);
-					styledText.append("添加文件" + filePath + "成功\n");
-					fileText.setText("");
+					files.add(filePath);
+					styledText.append("添加成功\n");
 				}
 			}
 		});
@@ -146,7 +170,7 @@ public class UniqueEditor extends EditorPart {
 		button_3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				service.stop();
+				files.clear();
 				styledText.append("任务已清理\n");
 			}
 		});
@@ -174,7 +198,21 @@ public class UniqueEditor extends EditorPart {
 								}
 
 							});
-							service.start(styledText, text, startBut);
+							String filePath = null;
+							while ((filePath = files.poll()) != null) {
+								List<Long> rs = FileUtils.readPhones(filePath);
+								phones.addAll(rs);
+								Display.getDefault().asyncExec(new PrintFilePath(filePath));
+							}
+							Display.getDefault().syncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									styledText.append("任务完成\n");
+									startBut.setEnabled(true);
+								}
+
+							});
 						} catch (IOException e) {
 							logger.error("", e);
 						}
@@ -192,9 +230,8 @@ public class UniqueEditor extends EditorPart {
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				service.stop();
-				startBut.setEnabled(true);
-				styledText.append("任务停止成功\n");
+				files.clear();
+				styledText.append("任务停止成功，请等待完成\n");
 			}
 		});
 		button_2.setText("停止");
@@ -220,7 +257,7 @@ public class UniqueEditor extends EditorPart {
 		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 11, 1));
 
 		Composite composite_1 = new Composite(composite, SWT.NONE);
-		composite_1.setLayout(new GridLayout(2, false));
+		composite_1.setLayout(new GridLayout(1, false));
 		composite_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 11, 1));
 
 		Button button_4 = new Button(composite_1, SWT.NONE);
@@ -230,28 +267,13 @@ public class UniqueEditor extends EditorPart {
 				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
 				String file = fileDialog.open();
 				try {
-					FileUtils.writePhones(service.getSuccess(), file);
+					FileUtils.writePhones(phones, file);
 				} catch (IOException e1) {
 					logger.error("", e1);
 				}
 			}
 		});
 		button_4.setText("导出成功");
-
-		Button btnshibai = new Button(composite_1, SWT.NONE);
-		btnshibai.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
-				String file = fileDialog.open();
-				try {
-					FileUtils.writePhones(service.getFailed(), file);
-				} catch (IOException e1) {
-					logger.error("", e1);
-				}
-			}
-		});
-		btnshibai.setText("导出失败");
 		// TODO Auto-generated method stub
 
 	}
@@ -274,7 +296,7 @@ public class UniqueEditor extends EditorPart {
 	 */
 	@Override
 	public void dispose() {
-		service.stop();
+		files.clear();
 		super.dispose();
 	}
 

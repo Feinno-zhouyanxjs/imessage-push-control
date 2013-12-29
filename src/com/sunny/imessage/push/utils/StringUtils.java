@@ -3,6 +3,7 @@
  */
 package com.sunny.imessage.push.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -41,7 +42,7 @@ public class StringUtils {
 
 	public static String getLocation() {
 		try {
-			URL url = FileLocator.toFileURL(Activator.getDefault().getBundle().getResource("../"));
+			URL url = FileLocator.toFileURL(Activator.getDefault().getBundle().getResource(".." + File.separatorChar));
 			return url.getPath();
 		} catch (IOException e) {
 			logger.error("", e);

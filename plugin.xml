@@ -83,6 +83,12 @@
            id="com.sunny.imessage.push.editor.SendEditor"
            name="文件发送">
      </editor>
+     <editor
+           class="com.sunny.imessage.push.editor.UniqueEditor"
+           icon="icons/email_send.png"
+           id="com.sunny.imessage.push.editor.UniqueEditor"
+           name="号码去重">
+     </editor>
   </extension>
   <extension
         id="product"
