@@ -68,7 +68,7 @@ public class ConfigDialog extends Dialog {
 
 	protected void createContents() {
 		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		shell.setSize(252, 201);
+		shell.setSize(278, 211);
 		shell.setLayout(new GridLayout(22, false));
 		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
