@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.file.FileUtils;
+import com.sunny.imessage.push.view.ConfigDialog;
 
 /**
  * 
@@ -65,7 +66,7 @@ public class SendService implements IService {
 	 * @see com.sunny.imessage.push.service.IService#getNum()
 	 */
 	@Override
-	public long getNum() {
+	public Long getNum() {
 		return phones.poll();
 	}
 
@@ -84,14 +85,16 @@ public class SendService implements IService {
 		Long num = getNum();
 		logger.debug("---------------------" + num);
 
-		if (num == null) {
+		if (num == null || num == -1) {
 			print("任务完成");
-			but.setEnabled(true);
+			if (but != null)
+				but.setEnabled(true);
+			response.getOutputStream().write("".getBytes("utf-8"));
+			response.getOutputStream().flush();
 			return;
 		}
 
 		JSONArray lstJSON = new JSONArray();
-		// for (int i = 0; i < max; i++) {
 		JSONObject phone = new JSONObject();
 		String strNum = num + "";
 		phone.put("phone", strNum);
@@ -107,7 +110,7 @@ public class SendService implements IService {
 		response.getOutputStream().flush();
 
 		// 输出状态信息
-		print(num + "-下发成功-------已下发:" + sendCount() + "/" + sum + "-------成功:" + success.size());
+		print(num + "-下发成功-------已下发:" + (sendCount() + ConfigDialog.sendCount) + "/" + (sum + ConfigDialog.taskCount) + "-------成功:" + (success.size() + ConfigDialog.successCount));
 
 	}
 
@@ -203,6 +206,8 @@ public class SendService implements IService {
 	 */
 	@Override
 	public synchronized void print(final String line) {
+		if (outputText == null)
+			return;
 		Display.getDefault().asyncExec(new Runnable() {
 
 			@Override

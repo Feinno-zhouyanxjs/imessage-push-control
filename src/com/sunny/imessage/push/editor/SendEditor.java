@@ -116,7 +116,7 @@ public class SendEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite composite) {
-		composite.setLayout(new GridLayout(10, false));
+		composite.setLayout(new GridLayout(11, false));
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -211,6 +211,21 @@ public class SendEditor extends EditorPart {
 		});
 		button_2.setText("停止");
 
+		Button button_4 = new Button(composite, SWT.NONE);
+		button_4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fileDialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+				String file = fileDialog.open();
+				try {
+					FileUtils.writePhones(service.getSuccess(), file);
+				} catch (IOException e1) {
+					logger.error("", e1);
+				}
+			}
+		});
+		button_4.setText("导出成功");
+
 		Button btnshibai = new Button(composite, SWT.NONE);
 		btnshibai.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -230,9 +245,19 @@ public class SendEditor extends EditorPart {
 
 		Label label_1 = new Label(composite, SWT.NONE);
 		label_1.setText("内容");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		text_1 = new Text(composite, SWT.BORDER | SWT.V_SCROLL);
-		GridData gd_text_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 10, 1);
+		GridData gd_text_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 11, 1);
 		gd_text_1.heightHint = 171;
 		text_1.setLayoutData(gd_text_1);
 
@@ -247,9 +272,10 @@ public class SendEditor extends EditorPart {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		styledText = new StyledText(composite, SWT.BORDER | SWT.V_SCROLL);
-		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 10, 1));
+		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 11, 1));
 		// TODO Auto-generated method stub
 
 	}

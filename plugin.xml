@@ -24,10 +24,14 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
-               label="File">
+               label="系统">
             <command
                   commandId="org.eclipse.ui.file.exit"
-                  label="Exit">
+                  label="退出">
+            </command>
+            <command
+                  commandId="com.sunny.imessage.push.handlers.ConfigHandler"
+                  id="com.sunny.imessage.push.Activator.menus.ConfigHandler">
             </command>
          </menu>
       </menuContribution>
@@ -61,19 +65,19 @@
         point="org.eclipse.ui.editors">
      <editor
            class="com.sunny.imessage.push.editor.ScanLocationEditor"
-           icon="icons/sample.gif"
+           icon="icons/my_network_places.png"
            id="com.sunny.imessage.push.editor.ScanLocationEditor"
            name="区域扫描">
      </editor>
      <editor
            class="com.sunny.imessage.push.editor.ScanCustomEditor"
-           icon="icons/sample.gif"
+           icon="icons/text_x_changelog.png"
            id="com.sunny.imessage.push.editor.ScanCustomEditor"
            name="自定义扫描">
      </editor>
      <editor
            class="com.sunny.imessage.push.editor.ScanFileEditor"
-           icon="icons/sample.gif"
+           icon="icons/document_import.png"
            id="com.sunny.imessage.push.editor.ScanFileEditor"
            name="文件扫描">
      </editor>
@@ -85,7 +89,7 @@
      </editor>
      <editor
            class="com.sunny.imessage.push.editor.UniqueEditor"
-           icon="icons/email_send.png"
+           icon="icons/phone.png"
            id="com.sunny.imessage.push.editor.UniqueEditor"
            name="号码去重">
      </editor>
@@ -106,4 +110,32 @@
         </property>
      </product>
   </extension>
+  <extension
+        point="org.eclipse.ui.commands">
+     <category
+           id="com.sunny.imessage.push.Activator.commands.category"
+           name="System">
+     </category>
+     <command
+           categoryId="com.sunny.imessage.push.Activator.commands.category"
+           id="com.sunny.imessage.push.handlers.ConfigHandler"
+           name="配置">
+     </command>
+  </extension>
+  <extension
+        point="org.eclipse.ui.handlers">
+     <handler
+           class="com.sunny.imessage.push.handlers.ConfigHandler"
+           commandId="com.sunny.imessage.push.handlers.ConfigHandler">
+     </handler>
+  </extension>
+  <!--<extension
+        point="org.eclipse.ui.bindings">
+     <key
+           commandId="com.sunny.imessage.push.Activator.commands.sampleCommand"
+           contextId="org.eclipse.ui.contexts.window"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+6">
+     </key>
+  </extension>-->
 </plugin>

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +43,22 @@ public class StringUtils {
 	}
 
 	public static String getLocation() {
+		// String path = null;
+		// Location location = Platform.getInstallLocation();
+		// if (location != null) {
+		// URL url = location.getURL();
+		// path = url.getPath();
+		// }
+		// logger.debug("-----" + path);
+		// return path;
+
 		try {
-			URL url = FileLocator.toFileURL(Activator.getDefault().getBundle().getResource(".." + File.separatorChar));
-			return url.getPath();
+			URL url = FileLocator.toFileURL(Activator.getDefault().getBundle().getResource("."));
+			logger.debug("getLocation -- " + url.getPath());
+			return url.getPath() + ".." + File.separatorChar;
 		} catch (IOException e) {
 			logger.error("", e);
 		}
 		return null;
 	}
-
 }

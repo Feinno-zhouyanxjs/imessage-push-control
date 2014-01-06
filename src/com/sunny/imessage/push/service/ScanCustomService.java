@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sunny.imessage.push.view.ConfigDialog;
+
 /**
  * 
  * 自定义扫描
@@ -34,7 +36,7 @@ public class ScanCustomService implements IService {
 
 	private LinkedBlockingQueue<Interval> lst = new LinkedBlockingQueue<Interval>();
 
-	private LinkedBlockingQueue<Long> phones = new LinkedBlockingQueue<Long>();
+	// private LinkedBlockingQueue<Long> phones = new LinkedBlockingQueue<Long>();
 
 	protected String text;
 
@@ -110,9 +112,9 @@ public class ScanCustomService implements IService {
 	 * @see com.sunny.imessage.push.service.SendService#getNum()
 	 */
 	@Override
-	public long getNum() {
+	public Long getNum() {
 		sendCount++;
-		return phones.poll();
+		return getSourcePhone();
 	}
 
 	/*
@@ -128,15 +130,16 @@ public class ScanCustomService implements IService {
 
 		if (num == null || num == -1) {
 			print("任务完成");
-			but.setEnabled(true);
+			if (but != null)
+				but.setEnabled(true);
+			response.getOutputStream().write("".getBytes("utf-8"));
+			response.getOutputStream().flush();
 			return;
 		}
 
 		JSONArray lstJSON = new JSONArray();
 		JSONObject phone = new JSONObject();
 		String strNum = num + "";
-		// if (!strNum.startsWith("86"))
-		// strNum = "86" + strNum;
 		phone.put("phone", strNum);
 		lstJSON.add(phone);
 
@@ -150,7 +153,7 @@ public class ScanCustomService implements IService {
 		response.getOutputStream().flush();
 
 		// 输出状态信息
-		print(num + "-下发成功-------已下发:" + sendCount + "/" + sum + "-------成功:" + success.size());
+		print(num + "-下发成功-------已下发:" + (sendCount + ConfigDialog.sendCount) + "/" + (sum + ConfigDialog.taskCount) + "-------成功:" + (success.size() + ConfigDialog.successCount));
 
 	}
 
@@ -192,7 +195,7 @@ public class ScanCustomService implements IService {
 	public void start(StyledText outputText, String text, Button buts) throws IOException {
 		this.text = text;
 		this.but = buts;
-		phones.clear();
+		// phones.clear();
 		this.outputText = outputText;
 		if (lst.size() == 0) {
 			print("请先添加扫描号码段");
@@ -205,11 +208,11 @@ public class ScanCustomService implements IService {
 			});
 			return;
 		}
-		long phone = -1;
-		while ((phone = getSourcePhone()) != -1) {
-			phones.add(phone);
-		}
-		sum = phones.size();
+		// long phone = -1;
+		// while ((phone = getSourcePhone()) != -1) {
+		// phones.add(phone);
+		// }
+		sum = lst.size() * 10000;
 		print("初始化号段成功，开始下发");
 
 	}
@@ -217,7 +220,7 @@ public class ScanCustomService implements IService {
 	@Override
 	public void stop() {
 		lst.clear();
-		phones.clear();
+		// phones.clear();
 	}
 
 	public ConcurrentHashSet<Long> getFailed() {
@@ -235,6 +238,8 @@ public class ScanCustomService implements IService {
 	 */
 	@Override
 	public synchronized void print(final String line) {
+		if (outputText == null)
+			return;
 		Display.getDefault().asyncExec(new Runnable() {
 
 			@Override

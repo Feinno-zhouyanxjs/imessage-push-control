@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Button;
  */
 public interface IService {
 
-	public long getNum();
+	public Long getNum();
 
 	public void doing(Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException;
 

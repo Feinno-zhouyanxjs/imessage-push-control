@@ -1,16 +1,18 @@
 package com.sunny.imessage.push.action;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sunny.imessage.push.service.IService;
+import com.sunny.imessage.push.view.ConfigDialog;
 
 /**
  * 
@@ -40,13 +42,13 @@ public class GetPhoneNum implements IAction {
 
 	@Override
 	public void doing(Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1;
-		int day = cal.get(Calendar.DAY_OF_MONTH);
-		if (year == 2014 && month == 1 && day > 5)
-			throw new IOException("io-io");
-
+		if (ConfigDialog.waitingTime > 20) {
+			ConfigDialog.waitingTime = 20;
+		}
+		try {
+			TimeUnit.SECONDS.sleep(ConfigDialog.waitingTime);
+		} catch (InterruptedException e) {
+		}
 		service.doing(baseRequest, request, response);
 	}
 

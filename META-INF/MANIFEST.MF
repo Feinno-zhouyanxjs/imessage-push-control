@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/ha-rpc-1.1.15-SNAPSHOT.jar,
  lib/json-smart-2.0-RC2.jar,
  lib/asm-3.3.1.jar,
- lib/asm-1.0-RC3.jar
+ lib/asm-1.0-RC3.jar,
+ lib/ha-rpc-1.1.15-SNAPSHOT.jar
