@@ -185,8 +185,8 @@ public class ScanLocationEditor extends EditorPart {
 				String file = StringUtils.getLocation() + "data" + File.separatorChar + sheng.getText() + File.separatorChar + shi.getText() + File.separatorChar + combo.getText();
 				try {
 					List<Long> lst = FileUtils.readPhones(file);
-					if (setList.size() + lst.size() > 1000) {
-						styledText.append("添加所选运营商将累计超过1000万号码，放弃添加\n");
+					if (setList.size() + lst.size() > 5000) {
+						styledText.append("添加所选运营商将累计超过5000万号码，放弃添加\n");
 						return;
 					}
 					for (long phone : lst) {
