@@ -99,6 +99,7 @@ public class ConfigDialog extends Dialog {
 		label.setText("下发数");
 
 		sendSpin = new Spinner(shell, SWT.BORDER);
+		sendSpin.setMaximum(Integer.MAX_VALUE);
 		sendSpin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 20, 1));
 		new Label(shell, SWT.NONE);
 
@@ -107,6 +108,7 @@ public class ConfigDialog extends Dialog {
 		label_1.setText("任务数");
 
 		taskSpin = new Spinner(shell, SWT.BORDER);
+		taskSpin.setMaximum(Integer.MAX_VALUE);
 		taskSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
 		new Label(shell, SWT.NONE);
 
@@ -115,6 +117,7 @@ public class ConfigDialog extends Dialog {
 		label_2.setText("成功数");
 
 		succSpin = new Spinner(shell, SWT.BORDER);
+		succSpin.setMaximum(Integer.MAX_VALUE);
 		succSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
 		new Label(shell, SWT.NONE);
 
@@ -122,6 +125,7 @@ public class ConfigDialog extends Dialog {
 		label_3.setText("下发延时(秒)");
 
 		waiting = new Spinner(shell, SWT.BORDER);
+		waiting.setMaximum(Integer.MAX_VALUE);
 		waiting.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
 		new Label(shell, SWT.NONE);
 
