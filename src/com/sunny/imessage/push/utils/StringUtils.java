@@ -43,22 +43,23 @@ public class StringUtils {
 	}
 
 	public static String getLocation() {
-		// String path = null;
-		// Location location = Platform.getInstallLocation();
-		// if (location != null) {
-		// URL url = location.getURL();
-		// path = url.getPath();
-		// }
-		// logger.debug("-----" + path);
-		// return path;
-
-		try {
-			URL url = FileLocator.toFileURL(Activator.getDefault().getBundle().getResource("."));
-			logger.debug("getLocation -- " + url.getPath());
-			return url.getPath() + ".." + File.separatorChar;
-		} catch (IOException e) {
-			logger.error("", e);
+		String path = null;
+		Location location = Platform.getInstallLocation();
+		if (location != null) {
+			URL url = location.getURL();
+			path = url.getPath();
 		}
-		return null;
+		logger.debug("-----" + path);
+		return path;
+
+		// try {
+		// URL url =
+		// FileLocator.toFileURL(Activator.getDefault().getBundle().getResource("."));
+		// logger.debug("getLocation -- " + url.getPath());
+		// return url.getPath() + ".." + File.separatorChar;
+		// } catch (IOException e) {
+		// logger.error("", e);
+		// }
+		// return null;
 	}
 }

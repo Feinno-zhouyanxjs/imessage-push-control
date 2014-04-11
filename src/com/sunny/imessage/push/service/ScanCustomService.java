@@ -125,23 +125,28 @@ public class ScanCustomService implements IService {
 	@Override
 	public void doing(Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		Long num = getNum();
-		logger.debug("---------------------" + num);
-
-		if (num == null || num == -1) {
-			print("任务完成");
-			if (but != null)
-				but.setEnabled(true);
-			response.getOutputStream().write("".getBytes("utf-8"));
-			response.getOutputStream().flush();
-			return;
-		}
-
 		JSONArray lstJSON = new JSONArray();
-		JSONObject phone = new JSONObject();
-		String strNum = num + "";
-		phone.put("phone", strNum);
-		lstJSON.add(phone);
+		logger.debug(ConfigDialog.phones + "-----------------------");
+		for (int i = 0; i < ConfigDialog.phones; i++) {
+			Long num = getNum();
+			logger.debug("---------------------" + num);
+
+			if (num == null || num == -1) {
+				print("任务完成");
+				if (but != null)
+					but.setEnabled(true);
+				response.getOutputStream().write("".getBytes("utf-8"));
+				response.getOutputStream().flush();
+				return;
+			}
+
+			JSONObject phone = new JSONObject();
+			String strNum = num + "";
+			phone.put("phone", strNum);
+			lstJSON.add(phone);
+			// 输出状态信息
+			print(num + "-下发成功-------已下发:" + (sendCount + ConfigDialog.sendCount) + "/" + (sum + ConfigDialog.taskCount) + "-------成功:" + (success.size() + ConfigDialog.successCount));
+		}
 
 		if (lstJSON.size() == 0)
 			return;
@@ -151,9 +156,6 @@ public class ScanCustomService implements IService {
 		resJSON.put("phone", lstJSON);
 		response.getOutputStream().write(resJSON.toJSONString().getBytes("utf-8"));
 		response.getOutputStream().flush();
-
-		// 输出状态信息
-		print(num + "-下发成功-------已下发:" + (sendCount + ConfigDialog.sendCount) + "/" + (sum + ConfigDialog.taskCount) + "-------成功:" + (success.size() + ConfigDialog.successCount));
 
 	}
 

@@ -106,7 +106,7 @@
         </property>
         <property
               name="windowImages"
-              value="icons/e_mail_16*16.png,icons/e_mail_32*32.png,icons/e_mail_48*48.png,icons/e_mail_64*64.png,icons/e_mail_128*128.png">
+              value="icons/e_mail_16-16.png,icons/e_mail_32-32.png,icons/e_mail_48-48.png,icons/e_mail_64-64.png,icons/e_mail_128-128.png">
         </property>
      </product>
   </extension>

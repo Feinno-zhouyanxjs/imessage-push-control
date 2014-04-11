@@ -33,11 +33,13 @@ public class ConfigDialog extends Dialog {
 	public static int taskCount = 0;
 	public static int successCount = 0;
 	public static int waitingTime = 0;
+	public static int phones = 1;
 
 	private Spinner sendSpin;
 	private Spinner taskSpin;
 	private Spinner succSpin;
 	private Spinner waiting;
+	private Spinner spinner;
 
 	/**
 	 * @param parent
@@ -68,7 +70,7 @@ public class ConfigDialog extends Dialog {
 
 	protected void createContents() {
 		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		shell.setSize(278, 211);
+		shell.setSize(318, 263);
 		shell.setLayout(new GridLayout(22, false));
 		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
@@ -100,7 +102,20 @@ public class ConfigDialog extends Dialog {
 
 		sendSpin = new Spinner(shell, SWT.BORDER);
 		sendSpin.setMaximum(Integer.MAX_VALUE);
-		sendSpin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 20, 1));
+		sendSpin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 7, 1));
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 
 		Label label_1 = new Label(shell, SWT.NONE);
@@ -109,7 +124,20 @@ public class ConfigDialog extends Dialog {
 
 		taskSpin = new Spinner(shell, SWT.BORDER);
 		taskSpin.setMaximum(Integer.MAX_VALUE);
-		taskSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
+		taskSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 7, 1));
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 
 		Label label_2 = new Label(shell, SWT.NONE);
@@ -118,7 +146,20 @@ public class ConfigDialog extends Dialog {
 
 		succSpin = new Spinner(shell, SWT.BORDER);
 		succSpin.setMaximum(Integer.MAX_VALUE);
-		succSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
+		succSpin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 7, 1));
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 
 		Label label_3 = new Label(shell, SWT.NONE);
@@ -126,12 +167,48 @@ public class ConfigDialog extends Dialog {
 
 		waiting = new Spinner(shell, SWT.BORDER);
 		waiting.setMaximum(Integer.MAX_VALUE);
-		waiting.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 20, 1));
+		waiting.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 7, 1));
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+
+		Label label_4 = new Label(shell, SWT.NONE);
+		label_4.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_4.setText("下发数量");
+
+		spinner = new Spinner(shell, SWT.BORDER);
+		spinner.setMaximum(20);
+		spinner.setMinimum(1);
+		spinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 7, 1));
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
-		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 21, 1));
+		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 8, 1));
 
 		Button button = new Button(composite, SWT.NONE);
 		button.addSelectionListener(new SelectionAdapter() {
@@ -141,6 +218,7 @@ public class ConfigDialog extends Dialog {
 				taskCount = Integer.valueOf(taskSpin.getText());
 				successCount = Integer.valueOf(succSpin.getText());
 				waitingTime = Integer.valueOf(waiting.getText());
+				phones = Integer.valueOf(spinner.getText());
 				shell.close();
 			}
 		});
@@ -154,5 +232,18 @@ public class ConfigDialog extends Dialog {
 			}
 		});
 		button_1.setText("取消");
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
 	}
 }
